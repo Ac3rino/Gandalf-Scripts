@@ -1,0 +1,35 @@
+#Prompt admin to enter users parameters
+$pn = Read-Host -Prompt "Input users name (e.g. jdoe@yourcompany.com)"
+$gn = Read-Host -Prompt "Input the name of the user (Their preffered name will be provided by HR)"
+$sn = Read-Host -Prompt "Input users lastname"
+$dn = Read-Host -Prompt "Input users displayname"
+$t = Read-Host -Prompt "Input Title (Provided by HR)"
+$d = Read-Host -Prompt "Input Department (e.g. Finance)"
+$e = Read-Host -Prompt "Input E-Mail Address (e.g. jdoe@yourcompany.com)"
+$mn = Read-Host -Prompt "Input E-Mail nickname"
+$manager = Read-Host -Prompt "Input manager username"
+
+$NewUserParameters = @{
+  UserPrincipalName = $pn
+  GivenName = $gn
+  Surname = $sn
+  DisplayName = $dn
+  Title = $t
+  Department = $d
+  EmailAddress = $e
+  Company = "Your company name here"
+  Manager = $manager
+}
+
+#Creates the user using these parameters in the object above
+New-AdUser @NewUserParameters
+
+#Sets the users email nickname
+Get-ADUser $dn | Set-AdUser -Add @{mailNickName = "$mn"}
+
+#Add user to common Security AD Groups
+Add-AdGroupMember -Identity "Group1" -Members "$dn"
+Add-AdGroupMember -Identity "Group2" -Members "$dn"
+Add-AdGroupMember -Identity "Group3" -Members "$dn"
+Add-AdGroupMember -Identity "Group4" -Members "$dn"
+Add-AdGroupMember -Identity "Group5" -Members "$dn"
